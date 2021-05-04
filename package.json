@@ -1,20 +1,33 @@
 {
-  "name": "lego",
+  "name": "charts-with-legos",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^6.1.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@tippyjs/react": "^4.2.5",
+    "@visx/axis": "^1.10.0",
+    "@visx/glyph": "^1.7.0",
+    "@visx/group": "^1.7.0",
+    "@visx/scale": "^1.7.0",
+    "@visx/shape": "^1.8.0",
+    "axios": "^0.21.1",
+    "chromatism": "^3.0.0",
+    "d3-array": "^2.12.1",
+    "d3-force": "^2.1.1",
+    "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "react-select": "^4.3.0",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,5 +47,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.1.2",
+    "autoprefixer": "^9.8.6",
+    "postcss": "^7.0.35",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.2"
   }
 }
