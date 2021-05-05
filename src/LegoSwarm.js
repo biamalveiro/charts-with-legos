@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, React } from "react";
+import { useEffect, useState, useMemo, React } from "react";
 import { isEmpty, random } from "lodash";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
@@ -8,11 +8,16 @@ import { forceSimulation, forceCollide, forceX, forceY } from "d3-force";
 
 import { useChartDimensions } from "./hooks/useChartDimensions";
 import LegoBrick from "./LegoBrick";
+import Tooltip from "./Tooltip";
 
-const TOP = 400;
 const SIDE = 25;
 const SIDE_ANGLED = Math.sqrt(2 * (SIDE / 2) ** 2);
 const COLORS = ["Yellow", "Royal Blue", "Red", "Green"];
+
+const randomColor = () => {
+  const randomIndex = random(0, COLORS.length - 1);
+  return COLORS[randomIndex];
+};
 
 const chartSettings = {
   marginLeft: SIDE_ANGLED,
@@ -23,17 +28,10 @@ const chartSettings = {
 
 const simulation = forceSimulation()
   .force("collide", forceCollide(SIDE_ANGLED))
-  .force("forceY", forceY(TOP))
   .alphaMin(0.05);
-
-const randomColor = () => {
-  const randomIndex = random(0, COLORS.length - 1);
-  return COLORS[randomIndex];
-};
 
 export default function LegoSwarm(props) {
   const [chartRef, dms] = useChartDimensions(chartSettings);
-  const [scale, setScale] = useState(null);
   const [renderCounter, setRenderCounter] = useState(0);
   const [bricks, setBricks] = useState([]);
 
@@ -65,29 +63,32 @@ export default function LegoSwarm(props) {
     setBricks(nodes);
 
     simulation
-      .force("forceX", forceX((d) => xScale(d["num_parts"])).strength(1))
+      .force(
+        "forceX",
+        forceX((d) => xScale(d["num_parts"]))
+      )
+      .force("forceY", forceY(dms.boundedHeight / 2))
       .on("tick", updateSimulation)
       .on("end", endSimulation)
       .nodes(nodes)
       .alpha(1)
       .restart();
-  }, [props.sets]);
+  }, [props.sets, xScale, dms.boundedHeight]);
 
-  console.log(bricks);
   return (
     <div ref={chartRef} className="w-full h-screen">
       <svg viewBox={`0 0 ${dms.width} ${dms.height}`}>
         {!isEmpty(bricks) ? (
           <AxisBottom
             scale={xScale}
-            top={TOP + dms.marginTop}
+            top={dms.height / 2}
             label="Number of pieces"
             labelOffset={20}
             axisClassName="axis"
           />
         ) : null}
         <Group top={dms.marginTop} left={dms.marginLeft}>
-          {bricks.map((brick, idx) => {
+          {bricks.map((brick) => {
             const angle = (Math.atan2(brick.vy, brick.vx) * 180) / Math.PI;
             return (
               <LegoBrick
@@ -99,7 +100,13 @@ export default function LegoSwarm(props) {
                 height={1}
                 color={brick.color}
                 rotation={angle}
-                data={brick}
+                tooltip={
+                  <Tooltip
+                    name={brick["name"]}
+                    pieces={brick["num_parts"]}
+                    year={brick["year"]}
+                  />
+                }
               />
             );
           })}
