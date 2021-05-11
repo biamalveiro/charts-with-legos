@@ -5,6 +5,7 @@ import colors from "./colors.json";
 import { brightness } from "chromatism";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
+import "tippy.js/themes/light.css";
 
 export default function LegoBrick(props) {
   const [isSelected, setIsSelected] = useState(false);
@@ -37,7 +38,7 @@ export default function LegoBrick(props) {
             />
           ))
         )}
-        <Tippy content={props.tooltip}>
+        <Tippy content={props.tooltip} theme="light">
           <rect
             width={widthPx}
             height={heightPx}

@@ -6,5 +6,12 @@
 
 Beeswarm with lego bricks
 
-![legoswarm](coverimage.gif)
+![legoswarm](coverimage-legoswarm.gif)
+
+
+### Bars
+
+Bars of lego bricks
+
+![legobars](coverimage-bars.gif)
 

@@ -6,6 +6,7 @@ import themes from "./top_themes.json";
 
 import "./App.css";
 import LegoSwarm from "./LegoSwarm";
+import LegoBars from "./LegoBars";
 
 function App() {
   const [theme, setTheme] = useState(null);
@@ -40,7 +41,9 @@ function App() {
         isSearchable={true}
         onChange={updateTheme}
       />
-      {!isEmpty(sets) ? <LegoSwarm sets={sets} /> : null}
+      {!isEmpty(sets)
+        ? [<LegoSwarm sets={sets} />, <LegoBars sets={sets} />]
+        : null}
     </div>
   );
 }

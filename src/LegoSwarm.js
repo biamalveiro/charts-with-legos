@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, React } from "react";
-import { isEmpty, random } from "lodash";
+import { isEmpty } from "lodash";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
 import { AxisBottom } from "@visx/axis";
@@ -7,28 +7,14 @@ import { extent } from "d3-array";
 import { forceSimulation, forceCollide, forceX, forceY } from "d3-force";
 
 import { useChartDimensions } from "./hooks/useChartDimensions";
+import { randomColor } from "./utils";
+import { SIDE, SIDE_ANGLED, chartSettings } from "./constants";
 import LegoBrick from "./LegoBrick";
-import Tooltip from "./Tooltip";
-
-const SIDE = 25;
-const SIDE_ANGLED = Math.sqrt(2 * (SIDE / 2) ** 2);
-const COLORS = ["Yellow", "Royal Blue", "Red", "Green"];
-
-const randomColor = () => {
-  const randomIndex = random(0, COLORS.length - 1);
-  return COLORS[randomIndex];
-};
-
-const chartSettings = {
-  marginLeft: SIDE_ANGLED,
-  marginTop: SIDE_ANGLED,
-  marginRight: SIDE_ANGLED * 2,
-  marginBottom: SIDE_ANGLED,
-};
+import TooltipSet from "./TooltipSet";
 
 const simulation = forceSimulation()
   .force("collide", forceCollide(SIDE_ANGLED))
-  .alphaMin(0.05);
+  .alphaMin(0.03);
 
 export default function LegoSwarm(props) {
   const [chartRef, dms] = useChartDimensions(chartSettings);
@@ -50,7 +36,7 @@ export default function LegoSwarm(props) {
 
   function updateSimulation() {
     setRenderCounter((count) => count + 1);
-    simulation.tick(10);
+    simulation.tick(5);
   }
 
   useEffect(() => {
@@ -89,7 +75,8 @@ export default function LegoSwarm(props) {
         ) : null}
         <Group top={dms.marginTop} left={dms.marginLeft}>
           {bricks.map((brick) => {
-            const angle = (Math.atan2(brick.vy, brick.vx) * 180) / Math.PI;
+            const iterationRotation =
+              (Math.atan2(brick.vy, brick.vx) * 180) / Math.PI;
             return (
               <LegoBrick
                 key={brick["set_num"]}
@@ -99,12 +86,13 @@ export default function LegoSwarm(props) {
                 width={1}
                 height={1}
                 color={brick.color}
-                rotation={angle}
+                rotation={iterationRotation}
                 tooltip={
-                  <Tooltip
+                  <TooltipSet
                     name={brick["name"]}
                     pieces={brick["num_parts"]}
                     year={brick["year"]}
+                    image={brick["set_img_url"]}
                   />
                 }
               />
